@@ -1,0 +1,63 @@
+buildscript {
+	ext {
+		springBootVersion = '3.2.5'
+		springCloudVersion = '2023.0.1'
+		lombokVersion = '1.18.30'
+		mapstructVersion = '1.5.3.Final'
+		resilience4jVersion = '1.7.0'
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '3.2.5' apply false
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'java'
+}
+
+allprojects {
+	group = 'com.carenest'
+	version = '0.0.1-SNAPSHOT'
+
+	repositories {
+		mavenCentral()
+	}
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+
+	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter'
+		implementation 'org.springframework.boot:spring-boot-starter-validation'
+		implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+		compileOnly "org.projectlombok:lombok:${lombokVersion}"
+		annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	}
+
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+		}
+	}
+
+	test {
+		useJUnitPlatform()
+	}
+}
+
+project(':common') {
+	bootJar {
+		enabled = false
+	}
+	jar {
+		enabled = true
+	}
+}
